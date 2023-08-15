@@ -1,0 +1,89 @@
+tabs:
+    fields:
+        created_at:
+            label: 'renick.survey::lang.survey.created_at'
+            mode: datetime
+            span: row
+            spanClass: 'col-md-6 col-lg-4'
+            disabled: true
+            readOnly: true
+            type: datepicker
+            tab: 'renick.survey::lang.survey.tab_general'
+        updated_at:
+            label: 'renick.survey::lang.survey.updated_at'
+            span: row
+            spanClass: 'col-md-6 col-lg-4'
+            type: datepicker
+            readOnly: true
+            disabled: true
+            tab: 'renick.survey::lang.survey.tab_general'
+        deleted_at:
+            label: 'renick.survey::lang.survey.deleted_at'
+            span: row
+            spanClass: 'col-md-6 col-lg-4'
+            type: datepicker
+            readOnly: true
+            disabled: true
+            tab: 'renick.survey::lang.survey.tab_general'
+        _divider1:
+            type: ruler
+            tab: 'renick.survey::lang.survey.tab_general'
+        is_active:
+            label: 'renick.survey::lang.survey.is_active'
+            span: row
+            spanClass: 'col-md-6 col-lg-3 mt-4'
+            type: switch
+            tab: 'renick.survey::lang.survey.tab_general'
+        is_anonym:
+            label: 'renick.survey::lang.survey.is_anonym'
+            span: row
+            spanClass: 'col-md-6 col-lg-3 mt-4'
+            type: switch
+            tab: 'renick.survey::lang.survey.tab_general'
+        is_multiselect:
+            label: 'renick.survey::lang.survey.is_multiselect'
+            span: row
+            spanClass: 'col-md-6 col-lg-3 mt-4'
+            type: switch
+            tab: 'renick.survey::lang.survey.tab_general'
+        notification_to:
+            label: 'renick.survey::lang.survey.notification_to'
+            span: row
+            spanClass: 'col-md-6 col-lg-3'
+            type: text
+            tab: 'renick.survey::lang.survey.tab_general'
+        _divider2:
+            type: ruler
+            tab: 'renick.survey::lang.survey.tab_general'
+        title:
+            label: 'renick.survey::lang.survey.title'
+            span: row
+            spanClass: col-md-12
+            type: text
+            tab: 'renick.survey::lang.survey.tab_general'
+        description:
+            label: 'renick.survey::lang.survey.description'
+            span: row
+            spanClass: col-lg-8
+            type: richeditor
+            tab: 'renick.survey::lang.survey.tab_general'
+
+        options:
+            label: 'renick.survey::lang.survey.options'
+            type: repeater
+            displayMode: builder
+            titleFrom: title
+            maxItems: 16
+            form:
+                fields:
+                    title:
+                        label: 'renick.survey::lang.survey.option_title'
+                        span: full
+                        type: text
+                    text:
+                        label: 'renick.survey::lang.survey.option_text'
+                        comment: 'renick.survey::lang.survey.option_text_hint'
+                        span: full
+                        type: richeditor
+            tab: 'renick.survey::lang.survey.tab_options'
+

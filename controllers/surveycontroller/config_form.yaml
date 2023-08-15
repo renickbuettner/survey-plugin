@@ -1,0 +1,10 @@
+name: 'renick.survey::lang.plugin.name'
+form: $/renick/survey/models/survey/fields.yaml
+modelClass: Renick\Survey\Models\Survey
+defaultRedirect: renick/survey/surveycontroller
+create:
+    redirect: 'renick/survey/surveycontroller/update/:id'
+    redirectClose: renick/survey/surveycontroller
+update:
+    redirect: renick/survey/surveycontroller
+    redirectClose: renick/survey/surveycontroller

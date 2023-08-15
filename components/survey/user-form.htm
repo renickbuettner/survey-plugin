@@ -1,0 +1,38 @@
+<div class="card-body user-form">
+    <h4 class="mb-4">{{ 'renick.survey::lang.component.user_details'|trans }}</h4>
+
+    <div class="row">
+        <div class="col-12 col-md-6 col-xl-4 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" name="user_name" id="survey-{{ model.id }}-user-name" placeholder="{{ 'renick.survey::lang.component.user_name'|trans }}" required>
+                <label for="survey-{{ model.id }}-user-name">{{ 'renick.survey::lang.component.user_name'|trans }} <sup>&ast;</sup></label>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4 mb-3">
+            <div class="form-floating">
+                <input type="email" class="form-control" name="user_email" id="survey-{{ model.id }}-user-email" placeholder="{{ 'renick.survey::lang.component.user_email'|trans }}" required>
+                <label for="survey-{{ model.id }}-user-email">{{ 'renick.survey::lang.component.user_email'|trans }} <sup>&ast;</sup></label>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4 mb-3">
+            <div class="form-floating">
+                <input type="tel" class="form-control" name="user_phone" id="survey-{{ model.id }}-user-phone" placeholder="{{ 'renick.survey::lang.component.user_phone'|trans }}">
+                <label for="survey-{{ model.id }}-user-phone">{{ 'renick.survey::lang.component.user_phone'|trans }}</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-floating mb-3">
+        <textarea class="form-control" name="user_comment" placeholder="{{ 'renick.survey::lang.component.user_comment'|trans }}" id="survey-{{ model.id }}-user-comment" maxlength="2000" style="min-height: 120px;"></textarea>
+        <label for="survey-{{ model.id }}-user-comment">{{ 'renick.survey::lang.component.user_comment'|trans }}</label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="{{ 'renick.survey::lang.component.user_privacy'|trans }}" name="user_privacy" id="survey-{{ model.id }}-user-privacy">
+        <label class="form-check-label" for="survey-{{ model.id }}-user-privacy">
+            {% partial __SELF__ ~ '::privacy-notice' %}
+        </label>
+    </div>
+</div>

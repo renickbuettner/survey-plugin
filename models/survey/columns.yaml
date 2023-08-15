@@ -1,0 +1,51 @@
+columns:
+    id:
+        label: id
+        type: number
+        invisible: true
+    deleted_at:
+        label: 'renick.survey::lang.survey.deleted_at'
+        type: datetime
+        invisible: true
+    title:
+        label: 'renick.survey::lang.survey.title'
+        type: text
+        searchable: true
+        sortable: true
+    description:
+        label: 'renick.survey::lang.survey.description'
+        type: text
+        searchable: true
+        invisible: true
+    is_active:
+        label: 'renick.survey::lang.survey.is_active'
+        type: switch
+        sortable: true
+    is_anonym:
+        label: 'renick.survey::lang.survey.is_anonym'
+        type: switch
+    is_multiselect:
+        label: 'renick.survey::lang.survey.is_multiselect'
+        type: switch
+        sortable: true
+    options:
+        label: 'renick.survey::lang.survey.options'
+        type: text
+        invisible: true
+    notification_to:
+        label: 'renick.survey::lang.survey.notification_to'
+        type: text
+        invisible: true
+    created_at:
+        label: 'renick.survey::lang.survey.created_at'
+        type: datetime
+        sortable: true
+    updated_at:
+        label: 'renick.survey::lang.survey.updated_at'
+        type: datetime
+        searchable: false
+        sortable: true
+    meta:
+        label: 'renick.survey::lang.survey.meta'
+        type: text
+        invisible: true

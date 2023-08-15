@@ -1,0 +1,28 @@
+{% if this.result %}
+    <div class="card-body text-white {{ __SELF__.isSuccess ? 'bg-success' : 'bg-danger' }}">
+        {% if __SELF__.error %}
+            <span class="error">
+                <i class="bi bi-exclamation-triangle-fill"></i> {{ __SELF__.error }}
+            </span>
+        {% endif %}
+
+        {% if __SELF__.feedback %}
+            {{ __SELF__.feedback }}
+        {% endif %}
+    </div>
+
+    {% if __SELF__.choices %}
+        <div class="card-body">
+            <h4>{{ 'renick.survey::lang.component.total_choices'|trans }}</h4>
+        </div>
+
+        <ul class="list-group list-group-flush">
+            {% for i in __SELF__.choices %}
+                <li class="list-group-item">
+                    <span class="badge bg-primary rounded-pill">{{ i.total }}</span>
+                    {{ i.option_title }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endif %}

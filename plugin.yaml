@@ -1,0 +1,17 @@
+plugin:
+    name: 'renick.survey::lang.plugin.name'
+    description: 'renick.survey::lang.plugin.description'
+    author: 'Renick BÜttner'
+    icon: oc-icon-eye
+    homepage: 'https://www.renick.io'
+permissions:
+    renick_survey_manage:
+        tab: 'renick.survey::lang.plugin.name'
+        label: 'renick.survey::lang.permissions.survey_manage'
+navigation:
+    renick-survey:
+        label: 'renick.survey::lang.plugin.name'
+        url: renick/survey/surveycontroller
+        icon: icon-eye
+        permissions:
+            - renick_survey_manage

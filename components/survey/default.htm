@@ -1,0 +1,144 @@
+{% set model = survey.getSurvey() %}
+{% if model %}
+    {% if model.is_active and model.isAccessible() %}
+        {% set targetPartial = "'" ~ __SELF__ ~ "::survey-ajax': '#survey-"~model.id~"-result'" %}
+        {{ form_ajax('onSubmitSurvey', { update: targetPartial }) }}
+        <div class="card" data-survey="{{ model.id }}">
+            <div class="card-body">
+                <h3 class="card-title">{{ model.title }}</h3>
+                {{ model.description|raw }}
+            </div>
+
+            <ul class="list-group list-group-flush">
+                {% for option in model.options %}
+                    {% set option_id = 'survey-'~model.id~'-option-'~loop.index %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-4 col-lg-1">
+                                {% if model.is_multiselect %}
+                                    <input class="form-check-input" type="checkbox" name="survey[{{ model.id }}][]" value="{{ option.title }}" id="{{ option_id }}-input" aria-labelledby="{{ option_id }}" />
+                                {% else %}
+                                    <input class="form-check-input" type="radio" name="survey[{{ model.id }}][]" value="{{ option.title }}" id="{{ option_id }}-input" aria-labelledby="{{ option_id }}" />
+                                {% endif %}
+                            </div>
+                            <div class="col-8 col-lg-11 description" id="{{ option_id }}">
+                                {{ option.text|raw }}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            {% if not model.is_anonym %}
+                {% partial __SELF__ ~ '::user-form' model=model %}
+            {% endif %}
+
+            <div id="survey-{{ model.id }}-result"></div>
+
+            <div class="card-footer">
+                <button class="btn btn-primary" type="submit">
+                    {{ 'renick.survey::lang.component.submit'|trans }} <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        {{ form_close() }}
+
+        <script>
+            (function () {
+                const widget = document.querySelector('div[data-survey="{{ model.id }}"]');
+                if (!widget) {
+                    return;
+                }
+
+                const submitButton = widget.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                const privacyNotice = widget.querySelector('input[name="user_privacy"]');
+                const options = [...widget.querySelectorAll('.list-group-item')];
+
+                const isOptionSelected = () => {
+                    const selectedOptions = options.filter(option => option.querySelector('input').checked);
+                    return selectedOptions.length > 0;
+                };
+
+                const canClickSubmit = () => {
+                    if (privacyNotice)
+                        return privacyNotice.checked && isOptionSelected();
+                    return isOptionSelected()
+                };
+
+                for (const option of options) {
+                    const input = option.querySelector('input');
+                    const description = option.querySelector('.description');
+                    description.addEventListener('click', () => {
+                        input.click();
+                        submitButton.disabled = !canClickSubmit();
+                    });
+                }
+
+                if (privacyNotice) {
+                    privacyNotice.addEventListener('change', () => {
+                        submitButton.disabled = !canClickSubmit();
+                    });
+                }
+
+                addEventListener('ajax:done', function(event) {
+                    try {
+                        const {context, data} = event.detail;
+                        if (context.handler !== 'onSubmitSurvey' || data.isSuccess !== true) {
+                            return;
+                        }
+
+                        const widget = document.querySelector('div[data-survey="{{ model.id }}"]');
+                        const listGroup = widget.querySelector('.list-group');
+                        listGroup.remove();
+
+                        const footer = widget.querySelector('.card-footer');
+                        footer.remove();
+
+                        const userForm = widget.querySelector('.user-form');
+                        if (userForm) {
+                            userForm.remove();
+                        }
+                    } catch (e) {}
+                });
+            })();
+        </script>
+    {% else %}
+        <div class="card" data-survey="{{ model.id }}">
+            <div class="card-body">
+                <h3 class="card-title">{{ model.title }}</h3>
+                {{ model.description|raw }}
+            </div>
+
+            <ul class="list-group list-group-flush">
+                {% for option in model.options %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-4 col-lg-1">
+                                <input class="form-check-input" type="radio" aria-label="Placeholder input" disabled>
+                            </div>
+                            <div class="col-8 col-lg-11 description">
+                                {{ option.text|raw }}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div id="survey-{{ model.id }}-result">
+                <div class="card-body">
+                    <h4>{{ 'renick.survey::lang.component.total_choices'|trans }}</h4>
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    {% for i in model.getTotalChoices %}
+                        <li class="list-group-item">
+                            <span class="badge bg-primary rounded-pill">{{ i.total }}</span>
+                            {{ i.option_title }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

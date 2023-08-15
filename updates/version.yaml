@@ -1,0 +1,11 @@
+v1.0.1:
+    - 'Initialize plugin'
+v1.0.2:
+    - 'Add tables for surveys'
+    - builder_table_create_renick_survey_surveys.php
+v1.0.3:
+    - 'Add survey events table'
+    - builder_table_create_renick_survey_events.php
+v1.0.4:
+    - 'Add table for choices'
+    - builder_table_create_renick_survey_choices.php
