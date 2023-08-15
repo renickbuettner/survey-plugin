@@ -18,6 +18,7 @@
         'statistics' => 'Statistics',
         'no_statistics' => 'No statistics available',
         'statistics_event_count' => 'Responses',
+        'statistics_choices_count' => 'Choices',
         'tab_general' => 'General',
         'tab_options' => 'Options',
         'option_title' => 'Title',

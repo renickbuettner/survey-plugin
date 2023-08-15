@@ -117,7 +117,7 @@ class Survey extends ComponentBase
             $eventId = $event->id;
             foreach ($this->choices as $choice) {
                 // validate that answer actually is preset in backend
-                if ($survey->getAnswerByTitle($choice) !== null)
+                if ($survey->getAnswerByTitle($choice) === null)
                     continue;
 
                 $eventChoice = new SurveyChoice();

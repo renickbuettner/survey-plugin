@@ -39,17 +39,25 @@ class Survey extends Model
      * @var array relations
      */
     public $hasMany = [
-        'events' => SurveyEvent::class
+        'events' => SurveyEvent::class,
+        'choices' => SurveyChoice::class,
     ];
 
 
-    public function events(): HasMany
-    {
-        return $this->hasMany(SurveyEvent::class, 'id', 'survey_id');
+    public function events(): HasMany {
+        return $this->hasMany(SurveyEvent::class);
     }
 
     public function getEventCount(): int {
         return $this->events()->count();
+    }
+
+    public function choices(): HasMany {
+        return $this->hasMany(SurveyChoice::class);
+    }
+
+    public function getChoicesCount(): int {
+        return $this->choices()->count();
     }
 
     public function getTotalChoices($force = false): array {
