@@ -1,0 +1,30 @@
+{
+    "name": "renick/survey-plugin",
+    "type": "october-plugin",
+    "description": "A simple survey plugin",
+    "homepage": "https://octobercms.com/plugin/renick-survey",
+    "keywords": [
+        "octobercms-plugin",
+        "octobercms",
+        "php",
+        "poll",
+        "survey"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Renick Büttner",
+            "email": "complains@renick.io"
+        }
+    ],
+    "require": {
+        "october/rain": "^3.0",
+        "composer/installers": "~1.0",
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}
