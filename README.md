@@ -18,6 +18,19 @@ The plugin is built without own CSS, or Javascript dependencies.
 The component twig layout is built with Bootstrap 5 classnames.
 If you do not have Bootstrap 5 in-place, please just add your own CSS.
 
+## How to use
+
+Just install the plugin and add the component to your page.
+Create a survey and add some options.
+Then select the survey in the component settings and you are done.
+
+It may is needed to add some own css rules to your theme to make it look nice for your template.
+The component is built with Bootstrap 5 classnames.
+
+The notification email is optional, and enables notifications for a survey.
+
+## Technical notice
+
 Also there are environment variables which may are handy:
 
 ```bash
@@ -26,6 +39,9 @@ SURVEY_IP_ADDRESS_LIMIT=99
 
 #  enable, disable using a cookie to prevent double answers
 SURVEY_COOKIE_LIMIT=false
+
+# disable all email notifications (may temporarily)
+SURVEY_DISABLE_EMAIL_NOTIFICATIONS=true
 ```
 
 ## Found a bug?

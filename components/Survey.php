@@ -130,6 +130,9 @@ class Survey extends ComponentBase
             // 3. If needed: Fetch the choices by group for the chart
             $this->choices = $survey->getTotalChoices(true);
 
+            // 4. Send notification to admin
+            $survey->onEventCreated($event);
+
         } catch (\Exception $e) {
             $this->error = trans('renick.survey::lang.component.error_invalid_request');
             throw new AjaxException([

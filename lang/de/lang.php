@@ -27,6 +27,24 @@
         'option_text' => 'Text',
         'option_text_hint' => 'Dieser Text wird als Antwortmöglichkeit inkl. Formatierungen angezeigt.',
     ],
+    'admin' => [
+        'surveys' => 'Umfragen',
+        'survey_events' => 'Teilnahmen',
+        'survey_choices' => 'Gewählte Optionen',
+    ],
+    'mail' => [
+      'admin_notification' => [
+          'title' => 'Survey Teilnahme',
+          'description' => 'Benachrichtigung nach einer Survey-Teilnahme',
+          'text' => 'Guten Tag,<br><br>Es wurde eine neue Survey-Teilnahme registriert.',
+          'user_name' => 'Name',
+          'user_email' => 'Email',
+          'user_phone' => 'Rufnummer',
+          'user_comment' => 'Bemerkung',
+          'submit_duration' => 'Seitenaufenthalt (in Sekunden)',
+          'selected_choices' => 'Gewählte Antworten',
+      ]
+    ],
     'component' => [
         'name' => 'Umfrage',
         'description' => 'Fügt eine Umfrage auf der Seite hinzu',

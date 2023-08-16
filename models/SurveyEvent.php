@@ -1,6 +1,7 @@
 <?php namespace Renick\Survey\Models;
 
 use Model;
+use October\Rain\Database\Relations\HasMany;
 
 /**
  * Model
@@ -30,6 +31,16 @@ class SurveyEvent extends Model
         'user_meta',
     ];
 
+    /**
+     * @var array relations
+     */
+    public $hasMany = [
+        'choices' => SurveyChoice::class,
+    ];
+
+    public function choices(): HasMany {
+        return $this->hasMany(SurveyChoice::class);
+    }
 
     public static function getIpAddressSubmissionsCount(int $surveyId, string $ipAddress): int {
         return self::where('ip_address', $ipAddress)

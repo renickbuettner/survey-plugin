@@ -1,0 +1,31 @@
+subject = "Survey participation"
+description = "Notification after a survey participation"
+==
+
+{{ "renick.survey::lang.mail.admin_notification.text"|trans|raw }}
+<hr />
+
+{% if not is_anonym %}
+<table style="width: 100%;">
+    {% for key, value in columns %}
+        <tr>
+            <td style="width: 50%; font-weight: bold; text-align: left; vertical-align: top;">{{ key }}</td>
+            <td style="width: 50%; vertical-align: top;">{{ value|default('—') }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<hr />
+{% endif %}
+
+<h2>{{ title }}</h2>
+<h3>{{ "renick.survey::lang.mail.admin_notification.selected_choices"|trans|raw }}</h3>
+
+<table style="width: 100%; text-align: left;">
+    {% for choice in choices %}
+        <tr>
+            <td style="width: 4%; vertical-align: top;">&#9632;</td>
+            <td style="width: 96%; vertical-align: top;">{{ choice }}</td>
+        </tr>
+    {% endfor %}
+</table>

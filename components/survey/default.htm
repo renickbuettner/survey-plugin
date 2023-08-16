@@ -44,11 +44,10 @@
         {{ form_close() }}
 
         <script>
-            (function () {
+            document.addEventListener('DOMContentLoaded', function () {
                 const widget = document.querySelector('div[data-survey="{{ model.id }}"]');
-                if (!widget) {
+                if (!widget)
                     return;
-                }
 
                 const submitButton = widget.querySelector('button[type="submit"]');
                 submitButton.disabled = true;
@@ -101,7 +100,7 @@
                         }
                     } catch (e) {}
                 });
-            })();
+            });
         </script>
     {% else %}
         <div class="card" data-survey="{{ model.id }}">

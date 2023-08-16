@@ -3,6 +3,9 @@
 use Backend;
 use BackendMenu;
 use Backend\Classes\Controller;
+use Renick\Survey\Models\Survey;
+use Renick\Survey\Models\SurveyChoice;
+use Renick\Survey\Models\SurveyEvent;
 
 class SurveyController extends Controller
 {
@@ -15,13 +18,25 @@ class SurveyController extends Controller
     public $listConfig = 'config_list.yaml';
 
     public $requiredPermissions = [
-        'renick_survey_manage' 
+        'renick_survey_manage'
     ];
 
     public function __construct()
     {
         parent::__construct();
         BackendMenu::setContext('Renick.Survey', 'renick-survey');
+    }
+
+    public function getSurveyCount(): int {
+        return Survey::all()->count();
+    }
+
+    public function getSurveyEventCount(): int {
+        return SurveyEvent::all()->count();
+    }
+
+    public function getSurveyChoicesCount(): int {
+        return SurveyChoice::all()->count();
     }
 
 }

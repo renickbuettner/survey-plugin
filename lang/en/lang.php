@@ -27,6 +27,24 @@
         'option_text' => 'Text',
         'option_text_hint' => 'This text will be displayed as option including formatting.',
     ],
+    'admin' => [
+        'surveys' => 'Surveys',
+        'survey_events' => 'Participations',
+        'survey_choices' => 'Selected options',
+    ],
+    'mail' => [
+        'admin_notification' => [
+            'title' => 'Survey participation',
+            'description' => 'Notification after a survey participation',
+            'text' => 'Hello,<br><br>A new survey participation has been registered.',
+            'user_name' => 'Name',
+            'user_email' => 'Email',
+            'user_phone' => 'Phone',
+            'user_comment' => 'Comment',
+            'submit_duration' => 'Page duration (in seconds)',
+            'selected_choices' => 'Selected answers',
+        ]
+    ],
     'component' => [
         'name' => 'Survey',
         'description' => 'Add a survey to a page',

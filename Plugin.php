@@ -37,4 +37,11 @@ class Plugin extends PluginBase
     public function registerSettings()
     {
     }
+
+    public function registerMailTemplates()
+    {
+        return [
+            'renick.survey::mail.admin_notification'
+        ];
+    }
 }

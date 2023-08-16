@@ -1,5 +1,6 @@
 <?php namespace Renick\Survey\Models;
 
+use Mail;
 use Model;
 use October\Rain\Database\Relations\HasMany;
 use Session;
@@ -94,9 +95,45 @@ class Survey extends Model
         return null;
     }
 
-    public function getUpdateLinkAttribute()
+    public function getUpdateLinkAttribute(): array
     {
         return ["/backend/renick/survey/surveycontroller/update/{$this->id}", trans('renick.survey::lang.survey.update')];
+    }
+
+    /**
+     * Send notification to admin
+     * @param SurveyEvent $event
+     * @return void
+     */
+    public function onEventCreated(SurveyEvent $event): void {
+        $to = $this->notification_to ?? '';
+        if (!filter_var($to, FILTER_VALIDATE_EMAIL) || env('SURVEY_DISABLE_EMAIL_NOTIFICATIONS', false))
+            return;
+
+        $subject = trans('renick.survey::lang.mail.admin_notification.title');
+        $params = [
+            'title' => $this->title,
+            'is_anonym' => !!$this->is_anonym,
+            'choices' => $event->choices()->pluck('option_title')->toArray(),
+            'columns' => [],
+        ];
+
+        if (!$this->is_anonym) {
+            $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_name')] = $event->user_name;
+            $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_email')] = $event->user_email;
+            $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_phone')] = $event->user_phone;
+
+            if (is_array($event->user_meta) && isset($event->user_meta['user_comment']))
+                $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_comment')] = $event->user_meta['user_comment'] ?? '';
+
+            if (intval($event->submit_duration) > 0)
+                $params['columns'][trans('renick.survey::lang.mail.admin_notification.submit_duration')] = $event->submit_duration;
+        }
+
+        Mail::queue('renick.survey::mail.admin_notification', $params, function ($message) use ($to, $subject) {
+            $message->to($to, $name = null);
+            $message->subject($subject);
+        });
     }
 
 }
