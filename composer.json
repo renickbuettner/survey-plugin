@@ -19,7 +19,7 @@
     ],
     "require": {
         "october/rain": "^3.0",
-        "composer/installers": "~1.0",
+        "composer/installers": "~1.0"
     },
     "minimum-stability": "dev",
     "config": {
