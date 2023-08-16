@@ -4,6 +4,8 @@
         'description' => 'A simple survey plugin',
     ],
     'survey' => [
+        'action' => 'Actions',
+        'update' => 'Edit',
         'created_at' => 'Created at',
         'updated_at' => 'Updated at',
         'deleted_at' => 'Deleted at',

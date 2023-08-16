@@ -49,3 +49,6 @@ columns:
         label: 'renick.survey::lang.survey.meta'
         type: text
         invisible: true
+    updateLink:
+        label: 'renick.survey::lang.survey.action'
+        type: linkage

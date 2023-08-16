@@ -4,6 +4,8 @@
         'description' => 'Plugin für Umfragen und Nutzerinteraktionen',
     ],
     'survey' => [
+        'action' => 'Aktionen',
+        'update' => 'Ändern',
         'created_at' => 'Erstellt am',
         'updated_at' => 'Aktualisiert am',
         'deleted_at' => 'Gelöscht am',

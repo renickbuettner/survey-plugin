@@ -94,4 +94,9 @@ class Survey extends Model
         return null;
     }
 
+    public function getUpdateLinkAttribute()
+    {
+        return ["/backend/renick/survey/surveycontroller/update/{$this->id}", trans('renick.survey::lang.survey.update')];
+    }
+
 }
