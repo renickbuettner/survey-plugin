@@ -9,3 +9,5 @@ v1.0.3:
 v1.0.4:
     - 'Add table for choices'
     - builder_table_create_renick_survey_choices.php
+v1.0.5:
+    - 'adjust form widget: option have more space, util function to get options with key-value for October forms, higher option repeater limit'

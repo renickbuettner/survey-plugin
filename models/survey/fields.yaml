@@ -67,13 +67,12 @@ tabs:
             spanClass: col-lg-8
             type: richeditor
             tab: 'renick.survey::lang.survey.tab_general'
-
         options:
             label: 'renick.survey::lang.survey.options'
             type: repeater
             displayMode: builder
             titleFrom: title
-            maxItems: 16
+            maxItems: 60
             form:
                 fields:
                     title:

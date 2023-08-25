@@ -136,4 +136,14 @@ class Survey extends Model
         });
     }
 
+    /**
+     * To be used within October forms (e.g. dropdown)
+     * @return array
+     */
+    public static function getSurveyOptions(): array {
+        return self::all()
+            ->pluck('title', 'id')
+            ->toArray();
+    }
+
 }

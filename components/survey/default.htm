@@ -14,14 +14,14 @@
                     {% set option_id = 'survey-'~model.id~'-option-'~loop.index %}
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-4 col-lg-1">
+                            <div class="col-1">
                                 {% if model.is_multiselect %}
                                     <input class="form-check-input" type="checkbox" name="survey[{{ model.id }}][]" value="{{ option.title }}" id="{{ option_id }}-input" aria-labelledby="{{ option_id }}" />
                                 {% else %}
                                     <input class="form-check-input" type="radio" name="survey[{{ model.id }}][]" value="{{ option.title }}" id="{{ option_id }}-input" aria-labelledby="{{ option_id }}" />
                                 {% endif %}
                             </div>
-                            <div class="col-8 col-lg-11 description" id="{{ option_id }}">
+                            <div class="col-11 description" id="{{ option_id }}">
                                 {{ option.text|raw }}
                             </div>
                         </div>
@@ -113,10 +113,10 @@
                 {% for option in model.options %}
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-4 col-lg-1">
+                            <div class="col-1">
                                 <input class="form-check-input" type="radio" aria-label="Placeholder input" disabled>
                             </div>
-                            <div class="col-8 col-lg-11 description">
+                            <div class="col-11 description">
                                 {{ option.text|raw }}
                             </div>
                         </div>
