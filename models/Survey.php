@@ -1,5 +1,6 @@
 <?php namespace Renick\Survey\Models;
 
+use Backend;
 use Mail;
 use Model;
 use October\Rain\Database\Relations\HasMany;
@@ -97,7 +98,10 @@ class Survey extends Model
 
     public function getUpdateLinkAttribute(): array
     {
-        return ["/backend/renick/survey/surveycontroller/update/{$this->id}", trans('renick.survey::lang.survey.update')];
+        return [
+            Backend::url("renick/survey/surveycontroller/update/{$this->id}"),
+            trans('renick.survey::lang.survey.update')
+        ];
     }
 
     /**
