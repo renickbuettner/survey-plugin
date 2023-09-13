@@ -82,7 +82,7 @@ class Survey extends Model
     public function isAccessible(): bool {
         $cookieName = "renick_survey_{$this->id}";
         $ipAddress = request()->ip();
-        $isCookieAlreadySet = env('SURVEY_COOKIE_LIMIT', true) && Session::has($cookieName, false);
+        $isCookieAlreadySet = env('SURVEY_COOKIE_LIMIT', true) && Session::has($cookieName);
         $idAddressLimit = intval(env('SURVEY_IP_ADDRESS_LIMIT', 1));
         if ($isCookieAlreadySet || SurveyEvent::getIpAddressSubmissionsCount($this->id, $ipAddress) >= $idAddressLimit)
             return false;

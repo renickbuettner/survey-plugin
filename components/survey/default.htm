@@ -52,10 +52,10 @@
                 const submitButton = widget.querySelector('button[type="submit"]');
                 submitButton.disabled = true;
                 const privacyNotice = widget.querySelector('input[name="user_privacy"]');
-                const options = [...widget.querySelectorAll('.list-group-item')];
+                const options = () => [...widget.querySelectorAll('.list-group-item')];
 
                 const isOptionSelected = () => {
-                    const selectedOptions = options.filter(option => option.querySelector('input').checked);
+                    const selectedOptions = options().filter(option => option.querySelector('input').checked);
                     return selectedOptions.length > 0;
                 };
 
@@ -65,7 +65,7 @@
                     return isOptionSelected();
                 };
 
-                for (const option of options) {
+                for (const option of options()) {
                     const input = option.querySelector('input');
                     const description = option.querySelector('.description');
                     description.addEventListener('click', () => {
