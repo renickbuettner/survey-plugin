@@ -65,14 +65,19 @@
                     return isOptionSelected();
                 };
 
-                for (const option of options()) {
-                    const input = option.querySelector('input');
-                    const description = option.querySelector('.description');
-                    description.addEventListener('click', () => {
-                        input.click();
-                        submitButton.disabled = !canClickSubmit();
-                    });
-                }
+                setTimeout(() => {
+                    for (const option of options()) {
+                        const input = option.querySelector('input');
+                        const description = option.querySelector('.description');
+                        description.addEventListener('click', () => {
+                            input.click();
+                            submitButton.disabled = !canClickSubmit();
+                        });
+                        input.addEventListener('change', () => {
+                            submitButton.disabled = !canClickSubmit();
+                        });
+                    }
+                }, 400);
 
                 if (privacyNotice) {
                     privacyNotice.addEventListener('change', () => {
