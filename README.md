@@ -13,6 +13,7 @@ this plugin:
 - [x] Fully customizable via Twig templates
 - [x] Fully customizable via CSS
 - [x] Simple Spam Protection
+- [x] Results page with charts and all answers (print support)
 
 The plugin is built without own CSS, or Javascript dependencies.
 The component twig layout is built with Bootstrap 5 classnames.
