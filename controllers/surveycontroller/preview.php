@@ -3,6 +3,8 @@
         <li><a href="<?= Backend::url('renick/survey/surveycontroller') ?>"><?= e(trans('renick.survey::lang.plugin.name')) ?></a></li>
         <li><?= e($this->pageTitle) ?></li>
     </ul>
+
+
 <?php Block::endPut() ?>
 
 <?php if (!$this->fatalError): ?>
@@ -30,6 +32,10 @@
         <?= e(trans('backend::lang.form.or')) ?>
         <a href="<?= Backend::url('renick/survey/surveycontroller/update/' . $formModel->id) ?>">
             <?= e(trans('renick.survey::lang.survey.update')) ?>
+        </a>
+        <?= e(trans('backend::lang.form.or')) ?>
+        <a href="<?= Backend::url('renick/survey/surveycontroller/results/' . $formModel->id) ?>">
+            <?= e(trans('renick.survey::lang.survey.results')) ?>
         </a>
     </span>
 </p>

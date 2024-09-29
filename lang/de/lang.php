@@ -26,6 +26,17 @@
         'option_title' => 'Titel',
         'option_text' => 'Text',
         'option_text_hint' => 'Dieser Text wird als Antwortmöglichkeit inkl. Formatierungen angezeigt.',
+        'results' => 'Ergebnisse',
+        'choices' => 'Abstimmungen',
+        'print' => 'Drucken',
+    ],
+    'results' => [
+        'choice' => 'Wahl',
+        'name' => 'Name',
+        'email' => 'E-Mail',
+        'phone' => 'Telefon',
+        'comment' => 'Bemerkung',
+        'created_at' => 'Datum',
     ],
     'admin' => [
         'surveys' => 'Umfragen',

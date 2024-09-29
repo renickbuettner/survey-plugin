@@ -23,7 +23,9 @@ class SurveyChoice extends Model
     /**
      * @var array rules for validation.
      */
-    public $rules = [
-    ];
+    public $rules = [];
 
+    public function getEvent(): ?SurveyEvent {
+        return SurveyEvent::find($this->survey_event_id);
+    }
 }

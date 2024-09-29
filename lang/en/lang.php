@@ -26,6 +26,17 @@
         'option_title' => 'Title',
         'option_text' => 'Text',
         'option_text_hint' => 'This text will be displayed as option including formatting.',
+        'results' => 'Results',
+        'choices' => 'Choices',
+        'print' => 'Print',
+    ],
+    'results' => [
+        'choice' => 'Choice',
+        'name' => 'Name',
+        'email' => 'E-Mail',
+        'phone' => 'Phone',
+        'comment' => 'Comment',
+        'created_at' => 'Date',
     ],
     'admin' => [
         'surveys' => 'Surveys',

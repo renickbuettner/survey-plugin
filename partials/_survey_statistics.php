@@ -27,7 +27,7 @@
                 <p><?= $model->getChoicesCount() ?: 0 ?></p>
             </div>
 
-            <div class="scoreboard-item control-chart" data-control="chart-bar">
+            <div class="control-chart wrap-legend" data-control="chart-bar" data-full-width="1" style="max-width: 400px;">
                 <ul>
                     <?php
                     foreach ($model->getTotalChoices() as $choice) {
