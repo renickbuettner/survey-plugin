@@ -30,7 +30,7 @@
             <div class="control-chart wrap-legend" data-control="chart-bar" data-full-width="1" style="max-width: 400px;">
                 <ul>
                     <?php
-                    foreach ($model->getTotalChoices() as $choice) {
+                    foreach ($model->getTotalChoices(true) as $choice) {
                     ?>
                         <li data-color="<?= $randomColor() ?>"><?= $choice['option_title'] ?> <span><?= $choice['total'] ?></span></li>
                     <?php

@@ -1,6 +1,7 @@
 <?php namespace Renick\Survey\Models;
 
 use Backend;
+use Cache;
 use Mail;
 use Model;
 use October\Rain\Database\Relations\HasMany;
@@ -63,20 +64,18 @@ class Survey extends Model
     }
 
     public function getTotalChoices($force = false): array {
+        $surveyId = $this->id;
+        $tll = $force ? 0 : 60 * 60 * 60;
         $key = "SURVEY_TOTAL_CHOICES_{$this->id}";
 
-        if (\Cache::has($key) && !$force)
-            return \Cache::get($key);
-
-        $array = SurveyChoice::where('survey_id', $this->id)
-            ->groupBy('option_title')
-            ->selectRaw('option_title, count(*) as total')
-            ->orderBy('total', 'desc')
-            ->get()
-            ->toArray();
-
-        \Cache::forever($key, $array);
-        return $array;
+        return Cache::remember($key, $tll, function () use ($surveyId) {
+            return SurveyChoice::where('survey_id', $surveyId)
+                ->groupBy('option_title')
+                ->selectRaw('option_title, count(*) as total')
+                ->orderBy('total', 'desc')
+                ->get()
+                ->toArray();
+        });
     }
 
     public function isAccessible(): bool {
