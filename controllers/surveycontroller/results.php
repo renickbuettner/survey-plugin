@@ -48,7 +48,8 @@
             display: block !important;
 
             table {
-                display: block;
+                display: flex;
+                flex-wrap: wrap;
 
                 tr {
                     display: block;

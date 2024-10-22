@@ -1,7 +1,6 @@
 <?php namespace Renick\Survey\Models;
 
 use Model;
-use October\Rain\Database\Relations\HasMany;
 
 /**
  * Model
@@ -24,8 +23,7 @@ class SurveyEvent extends Model
     /**
      * @var array rules for validation.
      */
-    public $rules = [
-    ];
+    public $rules = [];
 
     public $jsonable = [
         'user_meta',
@@ -38,7 +36,7 @@ class SurveyEvent extends Model
         'choices' => SurveyChoice::class,
     ];
 
-    public function choices(): HasMany {
+    public function choices(): \October\Rain\Database\Relations\HasMany {
         return $this->hasMany(SurveyChoice::class);
     }
 
@@ -48,4 +46,13 @@ class SurveyEvent extends Model
             ->count();
     }
 
+    public static function getUniqueEvents(string $id): \October\Rain\Database\Builder {
+        return self::where('survey_id', $id);
+    }
+
+    public static function isUniqueEmail(int $surveyId, string $email): bool {
+        return self::where('survey_id', $surveyId)
+            ->where('user_email', $email)
+            ->count() === 0;
+    }
 }

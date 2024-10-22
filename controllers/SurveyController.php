@@ -42,7 +42,7 @@ class SurveyController extends Controller
     public function results(int $id): void
     {
         $this->vars['survey'] = Survey::findOrFail($id);
-        $this->vars['survey_events'] = SurveyEvent::where('survey_id', $id)->groupByRaw('LOWER(user_email)')->get();
+        $this->vars['survey_events'] = SurveyEvent::getUniqueEvents($id)->get();
         $eventIds = $this->vars['survey_events']->pluck('id');
         $this->vars['survey_choices'] = SurveyChoice::where('survey_id', $id)->whereIn('survey_event_id', $eventIds)->get();
 

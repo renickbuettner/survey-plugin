@@ -15,3 +15,5 @@ v1.0.6:
     - 'Fix: Submit button is not blocked anymore, when not clicked the description'
 v1.0.7:
     - 'Feat: Add survey results page with all choices made by users, as well as print support.'
+v1.0.8:
+    - 'Chore: optionally allow only unique emails for a survey, improve print layout of survey results'

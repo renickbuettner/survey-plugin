@@ -43,6 +43,9 @@ SURVEY_COOKIE_LIMIT=false
 
 # disable all email notifications (may temporarily)
 SURVEY_DISABLE_EMAIL_NOTIFICATIONS=true
+
+# allow only one submit event per email and survey
+SURVEY_UNIQUE_EMAIL=true
 ```
 
 ## Found a bug?

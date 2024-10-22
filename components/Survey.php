@@ -84,7 +84,12 @@ class Survey extends ComponentBase
 
             $cookieName = "renick_survey_{$survey->id}";
             $ipAddress = request()->ip();
-            if (!$survey->isAccessible()) {
+
+            $isUniqueEmail =
+                !env('SURVEY_UNIQUE_EMAIL', true) ||
+                SurveyEvent::isUniqueEmail($survey->id, input('user_email'));
+
+            if (!$survey->isAccessible() || !$isUniqueEmail) {
                 $this->error = trans('renick.survey::lang.component.error_already_submitted');
                 return [
                     'isSuccess' => false,
@@ -98,8 +103,9 @@ class Survey extends ComponentBase
             $event->ip_address = $ipAddress;
             // ToDo: validate domain to prevent bounces?
             // see: https://stackoverflow.com/questions/12026842/how-to-validate-an-email-address-in-php
-            if (filter_var(input('user_email'), FILTER_VALIDATE_EMAIL))
+            if (filter_var(input('user_email'), FILTER_VALIDATE_EMAIL)) {
                 $event->user_email = input('user_email') ?? null;
+            }
             $event->user_name = input('user_name') ?? null;
             $event->user_meta = [
                 'user_phone' => input('user_phone') ?? null,
@@ -107,8 +113,9 @@ class Survey extends ComponentBase
             ];
 
             $durationKey = "survey_submit_start_{$survey->id}";
-            if (Session::has($durationKey))
+            if (Session::has($durationKey)) {
                 $event->submit_duration = round(microtime(true) - Session::pull($durationKey, 0), 3);
+            }
 
             $event->save();
             Session::put($cookieName, true, 60 * 24 * 365);
