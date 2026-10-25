@@ -14,6 +14,7 @@ this plugin:
 - [x] Fully customizable via CSS
 - [x] Simple Spam Protection
 - [x] Results page with charts and all answers (print support)
+- [x] Excel export (.xlsx) of the results, without extra dependencies
 
 The plugin is built without own CSS, or Javascript dependencies.
 The component twig layout is built with Bootstrap 5 classnames.
@@ -35,7 +36,7 @@ The notification email is optional, and enables notifications for a survey.
 Also there are environment variables which may are handy:
 
 ```bash
-# limit the number of surveys per IP address (limit per survey)
+# limit the number of submissions per IP address (limit per survey), 0 disables the IP limit
 SURVEY_IP_ADDRESS_LIMIT=99
 
 #  enable, disable using a cookie to prevent double answers
@@ -46,7 +47,20 @@ SURVEY_DISABLE_EMAIL_NOTIFICATIONS=true
 
 # allow only one submit event per email and survey
 SURVEY_UNIQUE_EMAIL=true
+
+# max submit attempts per minute per IP address and survey, 0 disables the throttle
+SURVEY_THROTTLE_PER_MINUTE=20
 ```
+
+The same options can be set in `config/renick/survey/config.php` of your October installation
+(`cookie_limit`, `ip_address_limit`, `unique_email`, `disable_email_notifications`, `throttle_per_minute`).
+Behind a reverse proxy, make sure proxies are trusted, otherwise all visitors share one IP address.
+
+## Excel export
+
+Open the results page of a survey and use the export button. The file contains the answers per
+participant and a summary per option. It is written without extra libraries and needs the PHP `zip` extension;
+without it a CSV file (UTF-8, semicolon separated) is delivered instead. Anonymous surveys contain no personal columns.
 
 ## Found a bug?
 

@@ -2,9 +2,10 @@
 
 use Backend;
 use Cache;
-use Mail;
 use Model;
 use October\Rain\Database\Relations\HasMany;
+use Renick\Survey\Classes\Compat\Notifier;
+use Renick\Survey\Classes\Compat\PluginConfig;
 use Session;
 
 /**
@@ -28,7 +29,10 @@ class Survey extends Model
     /**
      * @var array rules for validation.
      */
-    public $rules = [];
+    public $rules = [
+        'title' => 'required|string|max:255',
+        'notification_to' => 'nullable|email|max:255',
+    ];
 
     /**
      * @var array jsonable attributes.
@@ -63,34 +67,63 @@ class Survey extends Model
         return $this->choices()->count();
     }
 
-    public function getTotalChoices($force = false): array {
-        $surveyId = $this->id;
-        $tll = $force ? 0 : 60 * 60 * 60;
-        $key = "SURVEY_TOTAL_CHOICES_{$this->id}";
+    public static function totalChoicesCacheKey(int $surveyId): string {
+        return "SURVEY_TOTAL_CHOICES_{$surveyId}";
+    }
 
-        return Cache::remember($key, $tll, function () use ($surveyId) {
+    /**
+     * Drop the cached choice totals, e.g. after a new event or a deletion.
+     */
+    public static function flushChoicesCache(int $surveyId): void {
+        Cache::forget(self::totalChoicesCacheKey($surveyId));
+    }
+
+    /**
+     * Choice totals grouped by option (aggregated in SQL, cached until the
+     * next change of a choice, see SurveyChoice model events).
+     *
+     * @param bool $force bypass and refresh the cache
+     */
+    public function getTotalChoices($force = false): array {
+        $surveyId = (int) $this->id;
+        $key = self::totalChoicesCacheKey($surveyId);
+
+        if ($force) {
+            Cache::forget($key);
+        }
+
+        return Cache::remember($key, 60 * 60, function () use ($surveyId) {
             return SurveyChoice::where('survey_id', $surveyId)
+                ->whereIn('survey_event_id', SurveyEvent::where('survey_id', $surveyId)->select('id'))
                 ->groupBy('option_title')
                 ->selectRaw('option_title, count(*) as total')
                 ->orderBy('total', 'desc')
+                ->orderBy('option_title')
                 ->get()
                 ->toArray();
         });
     }
 
+    /**
+     * A survey accepts a submission unless the session or IP limit is hit.
+     * A SURVEY_IP_ADDRESS_LIMIT of 0 (or lower) disables the IP limit.
+     */
     public function isAccessible(): bool {
-        $cookieName = "renick_survey_{$this->id}";
-        $ipAddress = request()->ip();
-        $isCookieAlreadySet = env('SURVEY_COOKIE_LIMIT', true) && Session::has($cookieName);
-        $idAddressLimit = intval(env('SURVEY_IP_ADDRESS_LIMIT', 1));
-        if ($isCookieAlreadySet || SurveyEvent::getIpAddressSubmissionsCount($this->id, $ipAddress) >= $idAddressLimit)
+        if (PluginConfig::bool('cookie_limit') && Session::has("renick_survey_{$this->id}")) {
             return false;
-        return true;
+        }
+
+        $ipAddressLimit = PluginConfig::int('ip_address_limit');
+        if ($ipAddressLimit <= 0) {
+            return true;
+        }
+
+        return SurveyEvent::getIpAddressSubmissionsCount($this->id, (string) request()->ip()) < $ipAddressLimit;
     }
 
     public function getAnswerByTitle(string $title): mixed {
-        foreach ($this->options as $option)
-            if ($option['title'] === $title)
+        foreach ((array) $this->options as $option)
+            if (($option['title'] ?? null) === $title)
                 return $option;
         return null;
     }
@@ -110,7 +143,7 @@ class Survey extends Model
      */
     public function onEventCreated(SurveyEvent $event): void {
         $to = $this->notification_to ?? '';
-        if (!filter_var($to, FILTER_VALIDATE_EMAIL) || env('SURVEY_DISABLE_EMAIL_NOTIFICATIONS', false))
+        if (!filter_var($to, FILTER_VALIDATE_EMAIL) || PluginConfig::bool('disable_email_notifications'))
             return;
 
         $subject = trans('renick.survey::lang.mail.admin_notification.title');
@@ -124,7 +157,7 @@ class Survey extends Model
         if (!$this->is_anonym) {
             $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_name')] = $event->user_name;
             $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_email')] = $event->user_email;
-            $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_phone')] = $event->user_phone;
+            $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_phone')] = $event->user_meta['user_phone'] ?? '';
 
             if (is_array($event->user_meta) && isset($event->user_meta['user_comment']))
                 $params['columns'][trans('renick.survey::lang.mail.admin_notification.user_comment')] = $event->user_meta['user_comment'] ?? '';
@@ -133,10 +166,7 @@ class Survey extends Model
                 $params['columns'][trans('renick.survey::lang.mail.admin_notification.submit_duration')] = $event->submit_duration;
         }
 
-        Mail::queue('renick.survey::mail.admin_notification', $params, function ($message) use ($to, $subject) {
-            $message->to($to, $name = null);
-            $message->subject($subject);
-        });
+        Notifier::send('renick.survey::mail.admin_notification', $params, $to, $subject);
     }
 
     /**
@@ -144,9 +174,7 @@ class Survey extends Model
      * @return array
      */
     public static function getSurveyOptions(): array {
-        return self::all()
-            ->pluck('title', 'id')
-            ->toArray();
+        return self::query()->pluck('title', 'id')->all();
     }
 
 }

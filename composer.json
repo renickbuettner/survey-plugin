@@ -18,8 +18,12 @@
         }
     ],
     "require": {
+        "php": "^8.0.2",
         "october/rain": "^3.0 || ^4.0",
-        "composer/installers": "~1.0"
+        "composer/installers": "^1.0 || ^2.0"
+    },
+    "suggest": {
+        "ext-zip": "Needed for the Excel (.xlsx) export, a CSV file is offered without it"
     },
     "minimum-stability": "dev",
     "config": {
