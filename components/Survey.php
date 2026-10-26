@@ -2,10 +2,11 @@
 
 use AjaxException;
 use Cms\Classes\ComponentBase;
-use Cookie;
+use DB;
+use Illuminate\Support\Facades\RateLimiter;
+use Renick\Survey\Classes\Compat\PluginConfig;
 use Renick\Survey\Models\SurveyChoice;
 use Renick\Survey\Models\SurveyEvent;
-use Request;
 use Session;
 use Str;
 
@@ -44,22 +45,33 @@ class Survey extends ComponentBase
     }
 
     public function getSurveyIdOptions(): array {
-        $plucked = \Renick\Survey\Models\Survey::all()->pluck(
-            'title',
-            'id'
-        );
-
-        return $plucked->all();
+        return \Renick\Survey\Models\Survey::query()->pluck('title', 'id')->all();
     }
 
+    protected function findSurvey(): ?\Renick\Survey\Models\Survey {
+        $id = $this->property('surveyId');
+        return $id ? \Renick\Survey\Models\Survey::find($id) : null;
+    }
+
+    /**
+     * Used when rendering the page: remembers the start time in the session,
+     * to measure the time it takes to submit the survey.
+     */
     public function getSurvey(): ?\Renick\Survey\Models\Survey {
-        $survey = \Renick\Survey\Models\Survey::find($this->property('surveyId'));
+        $survey = $this->findSurvey();
         if ($survey)
-            // save timestamp to session, to measure the time it takes to submit the survey
             Session::put("survey_submit_start_{$survey->id}", microtime(true));
         return $survey;
     }
 
+    protected function failure(string $messageKey = 'renick.survey::lang.component.error_invalid_request'): void
+    {
+        $this->error = trans($messageKey);
+        throw new AjaxException([
+            'isSuccess' => false,
+            'error' => $this->error,
+        ]);
+    }
 
     /**
      * @throws AjaxException
@@ -71,91 +83,112 @@ class Survey extends ComponentBase
         $this->isSuccess = false;
         $this->choices = [];
 
+        $survey = $this->findSurvey();
+        if (!is_array($params) || !$survey || !isset($params[$survey->id]) || !$survey->is_active) {
+            $this->failure();
+            return [];
+        }
+
+        // Throttle, independent of the (configurable) submission limits
+        $throttleKey = "renick_survey_submit_{$survey->id}_" . request()->ip();
+        $maxAttempts = PluginConfig::int('throttle_per_minute');
+        if ($maxAttempts > 0) {
+            if (RateLimiter::tooManyAttempts($throttleKey, $maxAttempts)) {
+                $this->failure('renick.survey::lang.component.error_too_many_requests');
+            }
+            RateLimiter::hit($throttleKey, 60);
+        }
+
+        // Only known answers, each at most once, a single one for single-select surveys
+        $selected = [];
+        foreach ((array) $params[$survey->id] as $choice) {
+            if (is_string($choice) && $survey->getAnswerByTitle($choice) !== null) {
+                $selected[$choice] = $choice;
+            }
+        }
+        $selected = array_values($selected);
+        if (count($selected) === 0 || (!$survey->is_multiselect && count($selected) > 1)) {
+            $this->failure();
+        }
+
+        $email = trim((string) input('user_email', ''));
+        $hasValidEmail = $email !== '' && \Validator::make(['email' => $email], ['email' => 'email'])->passes();
+        $name = trim(strip_tags((string) input('user_name', '')));
+        if (!$survey->is_anonym && ($name === '' || !$hasValidEmail)) {
+            $this->failure();
+        }
+
         try {
-            if (!is_array($params) || count($params) === 0)
-                throw new \Exception('Invalid request');
+            $event = $this->storeSubmission($survey, $selected, $name, $hasValidEmail ? $email : null);
+        } catch (\Throwable $e) {
+            \Log::error('Renick.Survey: submission failed: ' . $e->getMessage());
+            $this->failure();
+        }
 
-            $surveyId = array_keys($params)[0];
-            $survey = \Renick\Survey\Models\Survey::findOrFail($surveyId);
-            $this->choices = $params[$surveyId] ?? [];
+        if ($event === null) {
+            $this->error = trans('renick.survey::lang.component.error_already_submitted');
+            return [
+                'isSuccess' => false,
+                'error' => $this->error,
+            ];
+        }
 
-            if ($survey->id !== $this->getSurvey()->id)
-                throw new \Exception('Mismatch in survey id');
+        Session::put("renick_survey_{$survey->id}", true);
+        $this->choices = $survey->getTotalChoices(true);
+        $survey->onEventCreated($event);
 
-            $cookieName = "renick_survey_{$survey->id}";
-            $ipAddress = request()->ip();
+        $this->isSuccess = true;
+        $this->feedback = trans('renick.survey::lang.component.feedback_success');
 
-            $isUniqueEmail =
-                !env('SURVEY_UNIQUE_EMAIL', true) ||
-                SurveyEvent::isUniqueEmail($survey->id, input('user_email'));
+        return [
+            'isSuccess' => true,
+            'error' => null,
+            'choices' => $this->choices,
+        ];
+    }
 
+    /**
+     * Stores event and choices atomically. The survey row is locked, so two
+     * parallel requests cannot both pass the limit checks.
+     *
+     * @return SurveyEvent|null null if the survey is not accessible (anymore)
+     */
+    protected function storeSubmission(\Renick\Survey\Models\Survey $survey, array $selected, string $name, ?string $email): ?SurveyEvent
+    {
+        return DB::transaction(function () use ($survey, $selected, $name, $email) {
+            \Renick\Survey\Models\Survey::query()->whereKey($survey->id)->lockForUpdate()->first();
+
+            $isUniqueEmail = !PluginConfig::bool('unique_email') || SurveyEvent::isUniqueEmail($survey->id, $email);
             if (!$survey->isAccessible() || !$isUniqueEmail) {
-                $this->error = trans('renick.survey::lang.component.error_already_submitted');
-                return [
-                    'isSuccess' => false,
-                    'error' => trans('renick.survey::lang.component.error_already_submitted'),
-                ];
+                return null;
             }
 
-            // 1. Create event
             $event = new SurveyEvent();
             $event->survey_id = $survey->id;
-            $event->ip_address = $ipAddress;
-            // ToDo: validate domain to prevent bounces?
-            // see: https://stackoverflow.com/questions/12026842/how-to-validate-an-email-address-in-php
-            if (filter_var(input('user_email'), FILTER_VALIDATE_EMAIL)) {
-                $event->user_email = input('user_email') ?? null;
-            }
-            $event->user_name = input('user_name') ?? null;
+            $event->ip_address = request()->ip();
+            $event->user_email = $email;
+            $event->user_name = $name !== '' ? Str::limit($name, 255, '') : null;
             $event->user_meta = [
-                'user_phone' => input('user_phone') ?? null,
-                'user_comment' => Str::limit(strip_tags(input('user_comment') ?? ''), 2000),
+                'user_phone' => Str::limit(strip_tags((string) input('user_phone', '')), 50, '') ?: null,
+                'user_comment' => Str::limit(strip_tags((string) input('user_comment', '')), 2000),
             ];
 
             $durationKey = "survey_submit_start_{$survey->id}";
             if (Session::has($durationKey)) {
-                $event->submit_duration = round(microtime(true) - Session::pull($durationKey, 0), 3);
+                $event->submit_duration = (int) round(microtime(true) - (float) Session::pull($durationKey, 0));
             }
 
             $event->save();
-            Session::put($cookieName, true, 60 * 24 * 365);
 
-            // 2. Store the choices belonging to the event
-            $eventId = $event->id;
-            foreach ($this->choices as $choice) {
-                // validate that answer actually is preset in backend
-                if ($survey->getAnswerByTitle($choice) === null)
-                    continue;
-
-                $eventChoice = new SurveyChoice();
-                $eventChoice->survey_id = $survey->id;
-                $eventChoice->survey_event_id = $eventId;
-                $eventChoice->option_title = $choice;
-                $eventChoice->save();
+            foreach ($selected as $title) {
+                $choice = new SurveyChoice();
+                $choice->survey_id = $survey->id;
+                $choice->survey_event_id = $event->id;
+                $choice->option_title = $title;
+                $choice->save();
             }
 
-            // 3. If needed: Fetch the choices by group for the chart
-            $this->choices = $survey->getTotalChoices(true);
-
-            // 4. Send notification to admin
-            $survey->onEventCreated($event);
-
-        } catch (\Exception $e) {
-            $this->error = trans('renick.survey::lang.component.error_invalid_request');
-            throw new AjaxException([
-                'isSuccess' => false,
-                'error' => $this->error,
-            ]);
-        }
-
-        $this->isSuccess = $this->error === null;
-        if ($this->isSuccess)
-            $this->feedback = trans('renick.survey::lang.component.feedback_success');
-
-        return [
-            'isSuccess' => $this->isSuccess,
-            'error' => $this->error,
-            'choices' => $this->choices,
-        ];
+            return $event;
+        });
     }
 }

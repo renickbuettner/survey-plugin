@@ -23,9 +23,29 @@ class SurveyChoice extends Model
     /**
      * @var array rules for validation.
      */
-    public $rules = [];
+    public $rules = [
+        'survey_id' => 'required|integer',
+        'survey_event_id' => 'required|integer',
+        'option_title' => 'required|string|max:255',
+    ];
+
+    public $belongsTo = [
+        'event' => [SurveyEvent::class, 'key' => 'survey_event_id'],
+    ];
+
+    public function afterSave(): void {
+        Survey::flushChoicesCache((int) $this->survey_id);
+    }
+
+    public function afterDelete(): void {
+        Survey::flushChoicesCache((int) $this->survey_id);
+    }
+
+    public function afterRestore(): void {
+        Survey::flushChoicesCache((int) $this->survey_id);
+    }
 
     public function getEvent(): ?SurveyEvent {
-        return SurveyEvent::find($this->survey_event_id);
+        return $this->event;
     }
 }

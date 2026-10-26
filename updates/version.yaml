@@ -18,3 +18,8 @@ v1.0.7:
 v1.0.8:
     - 'Chore: optionally allow only unique emails for a survey, improve print layout of survey results'
 v1.0.9: Compatibility with October v4
+v1.0.10:
+    - 'Fix: SURVEY_IP_ADDRESS_LIMIT=0 disables the IP limit instead of blocking every vote'
+    - 'Fix: bulk delete in the survey list (checkboxes), thanks to webfalter'
+    - 'Feat: Excel export of the results'
+    - 'Chore: harden submissions (transaction, throttle, validation), faster result queries, plugin config, tests'

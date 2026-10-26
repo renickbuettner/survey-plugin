@@ -80,6 +80,11 @@
                 </ul>
             </div>
 
+            <a class="btn btn-default float-end ms-2 oc-icon-download" id="survey-export-xlsx"
+               href="<?= Backend::url('renick/survey/surveycontroller/export/' . (int)$this->vars['survey']->id) ?>">
+                <?= e(trans('renick.survey::lang.survey.export')) ?>
+            </a>
+
             <button class="btn btn-default float-end" type="submit" onclick="window.print();">
                 <?= e(trans('renick.survey::lang.survey.print')) ?>
             </button>
