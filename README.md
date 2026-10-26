@@ -31,6 +31,26 @@ The component is built with Bootstrap 5 classnames.
 
 The notification email is optional, and enables notifications for a survey.
 
+## Show results
+
+Each survey has a **Show results** setting: *After voting* (default), *Never* or *Always*. It controls when the
+totals are visible to visitors, in the component as well as in the Content Editor block.
+
+## Content Editor block
+
+If the [Content Editor](https://github.com/renickbuettner/content-editor-plugin) plugin (`Renick.Content`) is installed,
+a **Survey** block appears in the *Components* group of the editor. It needs no setup and no settings switch.
+
+- Pick a survey, optionally set a heading and the heading level to fit the page structure.
+- **Results** can only restrict what the survey allows (*As set in the survey* or *Never show results here*).
+- The block renders a static shell that stays cacheable. The form itself is loaded for each visitor by a small
+  script (`assets/js/survey-embed.js`, no build step) from `/renick-survey/embed/{id}` and is never cached.
+  Without JavaScript a notice is shown instead of the form.
+- The form uses a fieldset with legend, labelled inputs, a live region for the status and moves the focus to the
+  confirmation. Non-anonymous surveys ask for name, email and consent.
+- The survey is referenced by its numeric id. When content is moved between installations, check the selected survey.
+- Without the Survey plugin the block stays in the document and is not shown on the page.
+
 ## Technical notice
 
 Also there are environment variables which may are handy:

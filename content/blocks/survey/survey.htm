@@ -1,0 +1,33 @@
+{% set s = data._survey %}
+{% if s.valid %}
+    {# Static shell: no token, no voted state. assets/js/survey-embed.js loads the per-visitor fragment. #}
+    <section {{ attributes|raw }}
+             data-rc-survey
+             data-endpoint="{{ s.endpoint }}"
+             data-query="{{ s.query }}"
+             data-style="{{ s.style }}"
+             aria-busy="true"
+             {% if preview %}aria-hidden="true"{% endif %}>
+        {% if s.heading %}
+            <h{{ s.level }} class="rc-survey__title">{{ s.heading }}</h{{ s.level }}>
+        {% endif %}
+        <div class="rc-survey__body" aria-live="polite">
+            {% if preview %}
+                <div class="rc-pv-placeholder">
+                    <strong>{{ s.preview.title }}</strong> <small>({{ s.preview.status }})</small>
+                    <ul>
+                        {% for option in s.preview.options %}<li>{{ option }}</li>{% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p class="rc-survey__loading">{{ s.loading }}</p>
+                <noscript><p class="rc-survey__noscript">{{ s.noscript }}</p></noscript>
+            {% endif %}
+        </div>
+    </section>
+    {% if not preview %}<script src="{{ s.script }}" defer></script>{% endif %}
+{% elseif preview %}
+    <div {{ attributes|raw }}><div class="rc-pv-placeholder">{{ s.missing }}</div></div>
+{% else %}
+    <!-- survey: no valid survey selected -->
+{% endif %}
