@@ -1,0 +1,30 @@
+/* Slim, theme-neutral styles of the survey block; colours follow the surrounding text. */
+[data-rc-survey] .rc-survey__title { margin: 0 0 .5em; }
+[data-rc-survey] .rc-survey__fieldset { border: 0; margin: 0 0 1em; padding: 0; min-width: 0; }
+[data-rc-survey] .rc-survey__legend { font-weight: 600; padding: 0; margin-bottom: .5em; }
+[data-rc-survey] .rc-survey__option,
+[data-rc-survey] .rc-survey__field--check { display: flex; gap: .6em; align-items: flex-start; margin: .35em 0; }
+[data-rc-survey] .rc-survey__option input,
+[data-rc-survey] .rc-survey__field--check input { margin-top: .3em; flex: none; }
+[data-rc-survey] .rc-survey__option label,
+[data-rc-survey] .rc-survey__field--check label { cursor: pointer; }
+[data-rc-survey] .rc-survey__option label > :first-child,
+[data-rc-survey] .rc-survey__description > :first-child { margin-top: 0; }
+[data-rc-survey] .rc-survey__option label > :last-child,
+[data-rc-survey] .rc-survey__description > :last-child { margin-bottom: 0; }
+[data-rc-survey] .rc-survey__field { margin: 0 0 .75em; }
+[data-rc-survey] .rc-survey__field:not(.rc-survey__field--check) label { display: block; margin-bottom: .2em; }
+[data-rc-survey] .rc-survey__field input[type="text"],
+[data-rc-survey] .rc-survey__field input[type="email"],
+[data-rc-survey] .rc-survey__field input[type="tel"],
+[data-rc-survey] .rc-survey__field textarea { width: 100%; max-width: 32em; box-sizing: border-box; font: inherit; padding: .4em .5em; }
+[data-rc-survey] .rc-survey__submit { font: inherit; padding: .5em 1.2em; cursor: pointer; }
+[data-rc-survey] .rc-survey__submit:disabled { cursor: not-allowed; opacity: .55; }
+[data-rc-survey] .rc-survey__error { margin: 0 0 1em; padding: .6em .8em; border: 2px solid currentColor; font-weight: 600; }
+[data-rc-survey] .rc-survey__notice { margin: 0 0 1em; padding: .6em .8em; border-left: 4px solid currentColor; }
+[data-rc-survey] .rc-survey__notice:focus { outline: 2px solid currentColor; outline-offset: 2px; }
+[data-rc-survey] .rc-survey__results ul { list-style: none; margin: 0; padding: 0; }
+[data-rc-survey] .rc-survey__results li { margin: .25em 0; }
+[data-rc-survey] .rc-survey__count { display: inline-block; min-width: 2em; padding: .05em .5em; margin-right: .4em; text-align: center; border: 1px solid currentColor; border-radius: 1em; font-variant-numeric: tabular-nums; }
+[data-rc-survey] .rc-survey__results-title { font-weight: 600; margin: 1em 0 .4em; }
+@media (prefers-reduced-motion: no-preference) { [data-rc-survey] .rc-survey__submit { transition: opacity .15s; } }

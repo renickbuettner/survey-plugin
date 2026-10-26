@@ -1,5 +1,6 @@
 <?php namespace Renick\Survey;
 
+use Event;
 use System\Classes\PluginBase;
 
 /**
@@ -12,6 +13,15 @@ class Plugin extends PluginBase
      */
     public function register()
     {
+        // Optional bridge: Content collects integrations in its own boot(), so this has to happen here.
+        // The class is only referenced inside the closure, so it never autoloads without Renick.Content.
+        Event::listen('renick.content.registerIntegrations', function () {
+            if (!class_exists(\Renick\Content\Classes\Integrations\Integration::class)) {
+                return [];
+            }
+
+            return [new \Renick\Survey\Classes\Content\SurveyContentIntegration()];
+        });
     }
 
     /**

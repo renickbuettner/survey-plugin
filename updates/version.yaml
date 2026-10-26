@@ -23,3 +23,8 @@ v1.0.10:
     - 'Fix: bulk delete in the survey list (checkboxes), thanks to webfalter'
     - 'Feat: Excel export of the results'
     - 'Chore: harden submissions (transaction, throttle, validation), faster result queries, plugin config, tests'
+v1.0.11:
+    - 'Feat: results_mode per survey (after vote, never, always) controls when totals are shown'
+    - builder_table_update_renick_survey_surveys_add_results_mode.php
+    - 'Feat: Survey block for the Renick.Content editor (optional, accessible, cache friendly)'
+    - 'Chore: submission logic moved into SubmissionService'

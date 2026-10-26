@@ -1,0 +1,12 @@
+<div class="card-body">
+    <h4>{{ 'renick.survey::lang.component.total_choices'|trans }}</h4>
+</div>
+
+<ul class="list-group list-group-flush">
+    {% for i in choices %}
+        <li class="list-group-item">
+            <span class="badge bg-primary rounded-pill">{{ i.total }}</span>
+            {{ i.option_title }}
+        </li>
+    {% endfor %}
+</ul>
