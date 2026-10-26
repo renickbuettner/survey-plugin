@@ -33,7 +33,11 @@
                 {% partial __SELF__ ~ '::user-form' model=model %}
             {% endif %}
 
-            <div id="survey-{{ model.id }}-result"></div>
+            <div id="survey-{{ model.id }}-result">
+                {% if model.resultsVisible(false) %}
+                    {% partial __SELF__ ~ '::totals' choices=model.getTotalChoices %}
+                {% endif %}
+            </div>
 
             <div class="card-footer">
                 <button class="btn btn-primary" type="submit">
@@ -130,18 +134,9 @@
             </ul>
 
             <div id="survey-{{ model.id }}-result">
-                <div class="card-body">
-                    <h4>{{ 'renick.survey::lang.component.total_choices'|trans }}</h4>
-                </div>
-
-                <ul class="list-group list-group-flush">
-                    {% for i in model.getTotalChoices %}
-                        <li class="list-group-item">
-                            <span class="badge bg-primary rounded-pill">{{ i.total }}</span>
-                            {{ i.option_title }}
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% if model.resultsVisible(true) %}
+                    {% partial __SELF__ ~ '::totals' choices=model.getTotalChoices %}
+                {% endif %}
             </div>
         </div>
     {% endif %}

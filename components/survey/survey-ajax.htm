@@ -12,17 +12,6 @@
     </div>
 
     {% if __SELF__.choices %}
-        <div class="card-body">
-            <h4>{{ 'renick.survey::lang.component.total_choices'|trans }}</h4>
-        </div>
-
-        <ul class="list-group list-group-flush">
-            {% for i in __SELF__.choices %}
-                <li class="list-group-item">
-                    <span class="badge bg-primary rounded-pill">{{ i.total }}</span>
-                    {{ i.option_title }}
-                </li>
-            {% endfor %}
-        </ul>
+        {% partial __SELF__ ~ '::totals' choices=__SELF__.choices %}
     {% endif %}
 {% endif %}

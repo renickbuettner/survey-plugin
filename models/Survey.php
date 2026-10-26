@@ -16,6 +16,10 @@ class Survey extends Model
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\SoftDelete;
 
+    public const RESULTS_AFTER_VOTE = 'after_vote';
+    public const RESULTS_NEVER = 'never';
+    public const RESULTS_ALWAYS = 'always';
+
     /**
      * @var array dates to cast from the database.
      */
@@ -32,6 +36,7 @@ class Survey extends Model
     public $rules = [
         'title' => 'required|string|max:255',
         'notification_to' => 'nullable|email|max:255',
+        'results_mode' => 'nullable|in:after_vote,never,always',
     ];
 
     /**
@@ -119,6 +124,35 @@ class Survey extends Model
         }
 
         return SurveyEvent::getIpAddressSubmissionsCount($this->id, (string) request()->ip()) < $ipAddressLimit;
+    }
+
+    public function getResultsModeOptions(): array {
+        return [
+            self::RESULTS_AFTER_VOTE => trans('renick.survey::lang.survey.results_mode_after_vote'),
+            self::RESULTS_NEVER => trans('renick.survey::lang.survey.results_mode_never'),
+            self::RESULTS_ALWAYS => trans('renick.survey::lang.survey.results_mode_always'),
+        ];
+    }
+
+    /**
+     * The effective mode; unknown or empty values behave like the default.
+     */
+    public function getEffectiveResultsMode(): string {
+        $mode = (string) $this->results_mode;
+        return in_array($mode, [self::RESULTS_NEVER, self::RESULTS_ALWAYS], true) ? $mode : self::RESULTS_AFTER_VOTE;
+    }
+
+    /**
+     * Whether the public totals may be shown to a visitor.
+     *
+     * @param bool $hasVoted the visitor voted already (or cannot vote anymore)
+     */
+    public function resultsVisible(bool $hasVoted): bool {
+        return match ($this->getEffectiveResultsMode()) {
+            self::RESULTS_NEVER => false,
+            self::RESULTS_ALWAYS => true,
+            default => $hasVoted,
+        };
     }
 
     public function getAnswerByTitle(string $title): mixed {

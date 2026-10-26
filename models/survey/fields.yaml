@@ -52,6 +52,14 @@ tabs:
             spanClass: 'col-md-6 col-lg-3'
             type: text
             tab: 'renick.survey::lang.survey.tab_general'
+        results_mode:
+            label: 'renick.survey::lang.survey.results_mode'
+            comment: 'renick.survey::lang.survey.results_mode_hint'
+            span: row
+            spanClass: 'col-md-6 col-lg-3'
+            type: dropdown
+            default: after_vote
+            tab: 'renick.survey::lang.survey.tab_general'
         _divider2:
             type: ruler
             tab: 'renick.survey::lang.survey.tab_general'
