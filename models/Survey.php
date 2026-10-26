@@ -56,6 +56,32 @@ class Survey extends Model
     ];
 
 
+    public static function isValidRef(string $ref): bool
+    {
+        return $ref !== '' && (ctype_digit($ref) ? (int) $ref > 0 : (bool) preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $ref));
+    }
+
+    /**
+     * Finds a survey by its UUID. A plain number is the id that blocks of older versions stored.
+     */
+    public static function findByRef(string $ref): ?self
+    {
+        if (!self::isValidRef($ref)) {
+            return null;
+        }
+
+        return ctype_digit($ref)
+            ? static::query()->find((int) $ref)
+            : static::query()->where('uuid', strtolower($ref))->first();
+    }
+
+    public function beforeCreate(): void
+    {
+        if (!$this->uuid || static::withTrashed()->where('uuid', $this->uuid)->exists()) {
+            $this->uuid = (string) \Illuminate\Support\Str::uuid();
+        }
+    }
+
     public function events(): HasMany {
         return $this->hasMany(SurveyEvent::class);
     }

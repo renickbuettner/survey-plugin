@@ -12,9 +12,9 @@ final class BlockData
     public const SCRIPT = 'plugins/renick/survey/assets/js/survey-embed.js';
     public const STYLE = 'plugins/renick/survey/assets/css/survey-embed.css';
 
-    public static function endpoint(int $surveyId): string
+    public static function endpoint(string $ref): string
     {
-        return url(self::ENDPOINT . '/' . $surveyId);
+        return url(self::ENDPOINT . '/' . $ref);
     }
 
     /** @param array<string, mixed> $block */
@@ -22,14 +22,14 @@ final class BlockData
     {
         $data = is_array($block['data'] ?? null) ? $block['data'] : [];
         $payload = EmbedPayload::fromBlockData($data);
-        $survey = $payload ? Survey::query()->find($payload->surveyId) : null;
+        $survey = $payload ? Survey::findByRef($payload->ref) : null;
 
         $info = ['valid' => $payload !== null && $survey !== null];
 
         if ($info['valid']) {
             $info += [
-                'id' => $payload->surveyId,
-                'endpoint' => self::endpoint($payload->surveyId),
+                'id' => $survey->id,
+                'endpoint' => self::endpoint($payload->ref),
                 'query' => http_build_query($payload->toQuery()),
                 'script' => url(self::SCRIPT),
                 'style' => url(self::STYLE),

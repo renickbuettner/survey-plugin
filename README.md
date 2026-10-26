@@ -44,11 +44,13 @@ a **Survey** block appears in the *Components* group of the editor. It needs no 
 - Pick a survey, optionally set a heading and the heading level to fit the page structure.
 - **Results** can only restrict what the survey allows (*As set in the survey* or *Never show results here*).
 - The block renders a static shell that stays cacheable. The form itself is loaded for each visitor by a small
-  script (`assets/js/survey-embed.js`, no build step) from `/renick-survey/embed/{id}` and is never cached.
+  script (`assets/js/survey-embed.js`, no build step) from `/renick-survey/embed/{uuid}` and is never cached.
   Without JavaScript a notice is shown instead of the form.
 - The form uses a fieldset with legend, labelled inputs, a live region for the status and moves the focus to the
   confirmation. Non-anonymous surveys ask for name, email and consent.
-- The survey is referenced by its numeric id. When content is moved between installations, check the selected survey.
+- The survey is referenced by its UUID (shown read-only in the survey form), so content can be moved between installations
+  together with the surveys. Blocks saved by older versions reference the numeric id and keep working; picking the survey
+  again in the editor switches them to the UUID. A migration assigns UUIDs to all existing surveys.
 - Without the Survey plugin the block stays in the document and is not shown on the page.
 
 ## Technical notice

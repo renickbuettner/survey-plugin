@@ -66,7 +66,7 @@ final class EmbedRenderer
     {
         $type = $survey->is_multiselect ? 'checkbox' : 'radio';
         $legend = $survey->is_multiselect ? 'legend_multi' : 'legend_single';
-        $action = BlockData::endpoint($survey->id);
+        $action = BlockData::endpoint($this->payload->ref);
 
         $html = '<form class="rc-survey__form" method="post" action="' . e($action) . '" data-rc-survey-form novalidate>';
         $html .= '<input type="hidden" name="_token" value="' . e(csrf_token()) . '">';
@@ -151,6 +151,6 @@ final class EmbedRenderer
 
     private function id(string $part): string
     {
-        return 'rc-survey-' . $this->payload->surveyId . '-' . $part;
+        return 'rc-survey-' . $this->payload->ref . '-' . $part;
     }
 }

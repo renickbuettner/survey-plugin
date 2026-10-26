@@ -1,7 +1,9 @@
 <?php namespace Renick\Survey\Classes\Content;
 
+use Renick\Survey\Models\Survey;
+
 /**
- * Signed parameters of one embedded survey. The signature binds the survey id to the block
+ * Signed parameters of one embedded survey. The signature binds the survey reference (uuid or legacy id) to the block
  * settings, so a page cannot be used to probe arbitrary ids or to widen the results policy.
  * It replaces neither the CSRF check nor the checks on the current survey record.
  */
@@ -11,23 +13,27 @@ final class EmbedPayload
     public const RESULTS_NEVER = 'never';
 
     public function __construct(
-        public readonly int $surveyId,
+        int|string $ref,
         public readonly string $results = self::RESULTS_INHERIT,
         public readonly int $headingLevel = 3,
         public readonly bool $shellHasHeading = false,
     ) {
+        $this->ref = (string) $ref;
     }
+
+    /** UUID of the survey, or the numeric id written by blocks of older versions */
+    public readonly string $ref;
 
     /** @param array<string, mixed> $data block data */
     public static function fromBlockData(array $data): ?self
     {
-        $id = (int) ($data['survey_id'] ?? 0);
-        if ($id <= 0) {
+        $ref = trim((string) ($data['survey_id'] ?? ''));
+        if (!Survey::isValidRef($ref)) {
             return null;
         }
 
         return new self(
-            $id,
+            $ref,
             ($data['results'] ?? '') === self::RESULTS_NEVER ? self::RESULTS_NEVER : self::RESULTS_INHERIT,
             self::clampLevel($data['heading_level'] ?? 3),
             trim((string) ($data['title'] ?? '')) !== '',
@@ -60,10 +66,10 @@ final class EmbedPayload
         ];
     }
 
-    public static function fromRequest(int $surveyId, array $input): self
+    public static function fromRequest(string $ref, array $input): self
     {
         return new self(
-            $surveyId,
+            $ref,
             ($input['r'] ?? '') === self::RESULTS_NEVER ? self::RESULTS_NEVER : self::RESULTS_INHERIT,
             self::clampLevel($input['h'] ?? 3),
             (string) ($input['s'] ?? '0') === '1',
@@ -72,7 +78,7 @@ final class EmbedPayload
 
     private function message(): string
     {
-        return implode('|', ['survey-embed', $this->surveyId, $this->results, $this->headingLevel, $this->shellHasHeading ? 1 : 0]);
+        return implode('|', ['survey-embed', $this->ref, $this->results, $this->headingLevel, $this->shellHasHeading ? 1 : 0]);
     }
 
     private static function key(): string

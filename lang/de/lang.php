@@ -14,6 +14,8 @@
         'is_active' => 'Für Antworten offen?',
         'is_anonym' => 'Anonyme Umfrage?',
         'is_multiselect' => 'Mehrere Antworten gestattet?',
+        'uuid' => 'Kennung',
+        'uuid_hint' => 'Stabile ID, wird von Integrationen wie dem Content-Block verwendet.',
         'results_mode' => 'Ergebnisse anzeigen',
         'results_mode_hint' => 'Legt fest, wann Besucher die Summen sehen. Integrationen (z. B. der Content-Block) dürfen dies nur einschränken.',
         'results_mode_after_vote' => 'Nach der Abstimmung',
