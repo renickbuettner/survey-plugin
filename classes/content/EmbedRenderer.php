@@ -76,7 +76,7 @@ final class EmbedRenderer
 
         $description = trim((string) $survey->description);
         if ($description !== '') {
-            $html .= '<div class="rc-survey__description" id="' . e($this->id('desc')) . '">' . \Html::clean($description) . '</div>';
+            $html .= '<div class="rc-survey__description" id="' . e($this->id('desc')) . '">' . $survey->getDescriptionHtml() . '</div>';
         }
 
         $html .= '<fieldset class="rc-survey__fieldset"'
@@ -93,7 +93,7 @@ final class EmbedRenderer
             $inputId = $this->id('opt-' . $i);
             $html .= '<div class="rc-survey__option">'
                 . '<input type="' . $type . '" name="choices[]" id="' . e($inputId) . '" value="' . e($title) . '">'
-                . '<label for="' . e($inputId) . '">' . ($text !== '' ? \Html::clean($text) : e($title)) . '</label>'
+                . '<label for="' . e($inputId) . '">' . ($text !== '' ? Survey::getOptionHtml($option) : e($title)) . '</label>'
                 . '</div>';
         }
         $html .= '</fieldset>';

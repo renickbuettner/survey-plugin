@@ -1,6 +1,7 @@
 <?php namespace Renick\Survey\Classes\Export;
 
 use Illuminate\Support\Str;
+use Renick\Survey\Classes\Compat\PluginConfig;
 use Renick\Survey\Models\Survey;
 use Renick\Survey\Models\SurveyChoice;
 use Renick\Survey\Models\SurveyEvent;
@@ -26,7 +27,7 @@ class ResultsExporter
      */
     public function build(): array
     {
-        $xlsx = XlsxWriter::isAvailable();
+        $xlsx = XlsxWriter::isAvailable() && strtolower((string) PluginConfig::get('export_format')) !== 'csv';
         $writer = $xlsx ? new XlsxWriter() : new CsvWriter();
 
         $this->writeResponses($writer);

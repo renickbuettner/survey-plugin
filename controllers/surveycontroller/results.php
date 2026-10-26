@@ -96,7 +96,7 @@
 
 $survey = $this->vars['survey'];
 $title = e($survey->title);
-$description = $survey->description;
+$description = $survey->getDescriptionHtml();
 $choices = $this->vars['survey_choices'];
 
 ?>

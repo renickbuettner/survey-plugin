@@ -18,6 +18,7 @@ class PluginConfig
         'unique_email' => ['SURVEY_UNIQUE_EMAIL', true],
         'disable_email_notifications' => ['SURVEY_DISABLE_EMAIL_NOTIFICATIONS', false],
         'throttle_per_minute' => ['SURVEY_THROTTLE_PER_MINUTE', 20],
+        'export_format' => ['SURVEY_EXPORT_FORMAT', 'auto'],
     ];
 
     public static function get(string $key): mixed

@@ -32,7 +32,7 @@
                     <?php
                     foreach ($model->getTotalChoices(true) as $choice) {
                     ?>
-                        <li data-color="<?= $randomColor() ?>"><?= $choice['option_title'] ?> <span><?= $choice['total'] ?></span></li>
+                        <li data-color="<?= $randomColor() ?>"><?= e($choice['option_title']) ?> <span><?= (int) $choice['total'] ?></span></li>
                     <?php
                     }
                     ?>

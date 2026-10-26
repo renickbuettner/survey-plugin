@@ -155,6 +155,17 @@ class Survey extends Model
         };
     }
 
+    /**
+     * Rich text authored in the backend, cleaned before it is printed unescaped.
+     */
+    public function getDescriptionHtml(): string {
+        return \Html::clean((string) $this->description);
+    }
+
+    public static function getOptionHtml(array $option): string {
+        return \Html::clean((string) ($option['text'] ?? ''));
+    }
+
     public function getAnswerByTitle(string $title): mixed {
         foreach ((array) $this->options as $option)
             if (($option['title'] ?? null) === $title)
