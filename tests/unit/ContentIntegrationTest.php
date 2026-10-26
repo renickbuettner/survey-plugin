@@ -44,7 +44,7 @@ class ContentIntegrationTest extends SurveyTestCase
 
         $payload = EmbedPayload::fromBlockData(['survey_id' => '7', 'heading_level' => '9', 'results' => 'weird', 'title' => ' Hi ']);
 
-        $this->assertSame(7, $payload->surveyId);
+        $this->assertSame("7", $payload->ref);
         $this->assertSame(6, $payload->headingLevel);
         $this->assertSame('inherit', $payload->results);
         $this->assertTrue($payload->shellHasHeading);
@@ -174,9 +174,11 @@ class ContentIntegrationTest extends SurveyTestCase
         $source = $integration->recordSources()['survey-surveys'];
         $a = $this->makeSurvey(['title' => 'Alpha poll']);
         $this->makeSurvey(['title' => 'Beta poll']);
-        $this->assertSame([(string) $a->id], array_column($source->search('alpha', 10), 'id'));
+        $this->assertSame([$a->uuid], array_column($source->search('alpha', 10), 'id'));
         $this->assertCount(2, $source->search('', 10));
-        $this->assertSame([(string) $a->id], array_column($source->labels([(string) $a->id, '99999', 'x']), 'id'));
+        $this->assertSame([$a->uuid], array_column($source->labels([$a->uuid, strtoupper($a->uuid), '99999', 'x']), 'id'));
+        // blocks of older versions stored the numeric id, the picker still shows their survey
+        $this->assertSame([(string) $a->id], array_column($source->labels([(string) $a->id]), 'id'));
     }
 
     public function testRegistrationEventReturnsIntegration(): void

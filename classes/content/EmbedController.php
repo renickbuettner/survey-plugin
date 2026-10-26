@@ -16,18 +16,18 @@ final class EmbedController
 {
     private const HEADERS = ['Cache-Control' => 'private, no-store, max-age=0', 'Vary' => 'Cookie'];
 
-    public function show(Request $request, int $id): Response
+    public function show(Request $request, string $id): Response
     {
         $payload = $this->payload($request, $id);
         if ($payload === null) {
             return response('', 404, self::HEADERS);
         }
 
-        $survey = Survey::query()->find($id);
+        $survey = Survey::findByRef($id);
         $renderer = new EmbedRenderer($payload);
 
         // Measures the time to submit; stays untouched on reloads and for further instances on the page
-        $timerKey = SubmissionService::sessionTimerKey($id);
+        $timerKey = SubmissionService::sessionTimerKey((int) $survey?->id);
         if ($survey && $renderer->canVote($survey) && !Session::has($timerKey)) {
             Session::put($timerKey, microtime(true));
         }
@@ -35,7 +35,7 @@ final class EmbedController
         return response($renderer->render($survey), 200, self::HEADERS + ['Content-Type' => 'text/html; charset=UTF-8']);
     }
 
-    public function submit(Request $request, int $id): JsonResponse
+    public function submit(Request $request, string $id): JsonResponse
     {
         // October's web group does not verify CSRF tokens by itself
         $token = (string) $request->input('_token', '');
@@ -44,7 +44,7 @@ final class EmbedController
         }
 
         $payload = $this->payload($request, $id);
-        $survey = $payload ? Survey::query()->find($id) : null;
+        $survey = $payload ? Survey::findByRef($id) : null;
         if (!$payload || !$survey) {
             return $this->error('renick.survey::lang.component.error_invalid_request', 404);
         }
@@ -68,7 +68,7 @@ final class EmbedController
         };
     }
 
-    private function payload(Request $request, int $id): ?EmbedPayload
+    private function payload(Request $request, string $id): ?EmbedPayload
     {
         $payload = EmbedPayload::fromRequest($id, $request->all());
 

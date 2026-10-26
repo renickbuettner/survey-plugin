@@ -33,3 +33,7 @@ v1.0.12:
     - 'Fix: the survey component shows errors of a failed submission (e.g. deleted survey, too many attempts) instead of doing nothing'
     - 'Feat: export_format option (auto, csv) to force the csv export, csv fallback is now covered by tests'
     - 'Chore: more tests for results_mode, validation, escaping and the Content Editor block'
+v1.0.13:
+    - 'Feat: surveys get a stable UUID, the Content Editor block references it, existing blocks with the numeric id keep working'
+    - builder_table_update_renick_survey_surveys_add_uuid.php
+    - 'Chore: more tests for the migration, the reference lookup and the block'

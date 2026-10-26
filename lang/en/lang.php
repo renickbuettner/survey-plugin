@@ -14,6 +14,8 @@
         'is_active' => 'Responses allowed',
         'is_anonym' => 'Is anonym survey?',
         'is_multiselect' => 'Multiple options allowed?',
+        'uuid' => 'Identifier',
+        'uuid_hint' => 'Stable ID, used by integrations such as the content block.',
         'results_mode' => 'Show results',
         'results_mode_hint' => 'Controls when visitors see the totals. Integrations (e.g. the content block) may only restrict this.',
         'results_mode_after_vote' => 'After voting',
