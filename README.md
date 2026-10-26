@@ -70,10 +70,13 @@ SURVEY_UNIQUE_EMAIL=true
 
 # max submit attempts per minute per IP address and survey, 0 disables the throttle
 SURVEY_THROTTLE_PER_MINUTE=20
+
+# export results as csv instead of xlsx (default: auto, csv is used automatically without the PHP zip extension)
+SURVEY_EXPORT_FORMAT=csv
 ```
 
 The same options can be set in `config/renick/survey/config.php` of your October installation
-(`cookie_limit`, `ip_address_limit`, `unique_email`, `disable_email_notifications`, `throttle_per_minute`).
+(`cookie_limit`, `ip_address_limit`, `unique_email`, `disable_email_notifications`, `throttle_per_minute`, `export_format`).
 Behind a reverse proxy, make sure proxies are trusted, otherwise all visitors share one IP address.
 
 ## Excel export

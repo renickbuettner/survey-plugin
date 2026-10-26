@@ -21,4 +21,7 @@ return [
 
     // Max submission attempts per minute per IP address and survey
     'throttle_per_minute' => env('SURVEY_THROTTLE_PER_MINUTE', 20),
+
+    // Export format: 'auto' (xlsx, csv without the PHP zip extension) or 'csv' to always export csv
+    'export_format' => env('SURVEY_EXPORT_FORMAT', 'auto'),
 ];

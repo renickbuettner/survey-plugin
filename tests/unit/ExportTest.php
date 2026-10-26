@@ -259,6 +259,34 @@ class ExportTest extends SurveyTestCase
         $this->assertSame('260', $summary[1][1]);
     }
 
+    public function testExportFormatCsvForcesFallback(): void
+    {
+        $survey = $this->makeSurvey(['title' => 'Farbe']);
+        $this->makeEvent($survey, ['user_name' => 'Ann', 'user_email' => 'ann@example.com'], ['Red']);
+
+        \Config::set('renick.survey::export_format', 'csv');
+        $export = (new ResultsExporter($survey))->build();
+        $this->tmp[] = $export['path'];
+
+        $this->assertStringEndsWith('.csv', $export['filename']);
+        $this->assertSame('text/csv; charset=UTF-8', $export['mime']);
+        $csv = file_get_contents($export['path']);
+        $this->assertSame("\xEF\xBB\xBF", substr($csv, 0, 3));
+        $this->assertStringContainsString('Ann', $csv);
+        $this->assertStringContainsString('ann@example.com', $csv);
+        $this->assertStringContainsString('Red', $csv);
+    }
+
+    public function testExportFormatAutoUsesXlsxWhenAvailable(): void
+    {
+        $this->requireZip();
+        $survey = $this->makeSurvey();
+        \Config::set('renick.survey::export_format', 'auto');
+        $export = (new ResultsExporter($survey))->build();
+        $this->tmp[] = $export['path'];
+        $this->assertStringEndsWith('.xlsx', $export['filename']);
+    }
+
     public function testFilenameSlug(): void
     {
         $survey = $this->makeSurvey(['title' => str_repeat('Long title ', 20)]);

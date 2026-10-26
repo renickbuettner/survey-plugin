@@ -31,4 +31,5 @@ v1.0.11:
 v1.0.12:
     - 'Fix: results page and statistics escape option titles, descriptions and option texts are cleaned before they are printed'
     - 'Fix: the survey component shows errors of a failed submission (e.g. deleted survey, too many attempts) instead of doing nothing'
+    - 'Feat: export_format option (auto, csv) to force the csv export, csv fallback is now covered by tests'
     - 'Chore: more tests for results_mode, validation, escaping and the Content Editor block'
