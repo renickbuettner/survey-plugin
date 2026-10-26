@@ -6,7 +6,7 @@
         <div class="card" data-survey="{{ model.id }}">
             <div class="card-body">
                 <h3 class="card-title">{{ model.title }}</h3>
-                {{ model.description|raw }}
+                {{ model.getDescriptionHtml()|raw }}
             </div>
 
             <ul class="list-group list-group-flush">
@@ -22,7 +22,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-11 description" id="{{ option_id }}">
-                                {{ option.text|raw }}
+                                {{ model.getOptionHtml(option)|raw }}
                             </div>
                         </div>
                     </li>
@@ -89,6 +89,28 @@
                     });
                 }
 
+                addEventListener('ajax:fail', function(event) {
+                    try {
+                        const {context, data} = event.detail;
+                        if (context.handler !== 'onSubmitSurvey' || !data || !data.error) {
+                            return;
+                        }
+
+                        const result = document.querySelector('#survey-{{ model.id }}-result');
+                        if (!result || !widget.contains(result)) {
+                            return;
+                        }
+
+                        result.innerHTML = '';
+                        const box = document.createElement('div');
+                        box.className = 'card-body text-white bg-danger';
+                        box.setAttribute('role', 'alert');
+                        box.textContent = data.error;
+                        result.appendChild(box);
+                        submitButton.disabled = !canClickSubmit();
+                    } catch (e) {}
+                });
+
                 addEventListener('ajax:done', function(event) {
                     try {
                         const {context, data} = event.detail;
@@ -115,7 +137,7 @@
         <div class="card" data-survey="{{ model.id }}">
             <div class="card-body">
                 <h3 class="card-title">{{ model.title }}</h3>
-                {{ model.description|raw }}
+                {{ model.getDescriptionHtml()|raw }}
             </div>
 
             <ul class="list-group list-group-flush">
@@ -126,7 +148,7 @@
                                 <input class="form-check-input" type="radio" aria-label="Placeholder input" disabled>
                             </div>
                             <div class="col-11 description">
-                                {{ option.text|raw }}
+                                {{ model.getOptionHtml(option)|raw }}
                             </div>
                         </div>
                     </li>
